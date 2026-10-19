@@ -112,9 +112,13 @@ void AHBot_AuctionHouseScript::OnAuctionAdd(AuctionHouseObject* /*ah*/, AuctionE
     // Consider only those auctions handled by the bots
     //
 
+    // agent-wow local patch: with ConsiderOnlyBotAuctions the count is of the bot's own auctions, so skip the ones
+    // that are NOT its own. The test was the other way round: the bot's adds and removals never reached its counts,
+    // which stayed what they were at startup, and every refill until the next restart drew from the same bins
+    // (upstream issue #137, "Bot Only Posting White Trade Items").
     if (config->ConsiderOnlyBotAuctions)
     {
-        if (gBotsId.find(auction->owner.GetCounter()) != gBotsId.end())
+        if (gBotsId.find(auction->owner.GetCounter()) == gBotsId.end())
         {
             return;
         }
@@ -172,9 +176,13 @@ void AHBot_AuctionHouseScript::OnAuctionRemove(AuctionHouseObject* /*ah*/, Aucti
     }
 
     // Consider only those auctions handled by the bots
+    // agent-wow local patch: with ConsiderOnlyBotAuctions the count is of the bot's own auctions, so skip the ones
+    // that are NOT its own. The test was the other way round: the bot's adds and removals never reached its counts,
+    // which stayed what they were at startup, and every refill until the next restart drew from the same bins
+    // (upstream issue #137, "Bot Only Posting White Trade Items").
     if (config->ConsiderOnlyBotAuctions)
     {
-        if (gBotsId.find(auction->owner.GetCounter()) != gBotsId.end())
+        if (gBotsId.find(auction->owner.GetCounter()) == gBotsId.end())
         {
             return;
         }
